@@ -3,6 +3,8 @@ import plotly.express as px
 import plotly.graph_objects as go
 import requests
 import json
+from binance.client import Client
+from binance.enums import *
 
 st.sidebar.title("Input parameters")
 
@@ -10,7 +12,7 @@ amount = st.sidebar.number_input(
     "Euro exchange amount",
     value = 100.0,
     min_value=1.0,
-    step = 1.0,
+    step = 50.0,
     format="%.2f")
 
 requested = st.sidebar.number_input(
@@ -42,9 +44,10 @@ submit = st.sidebar.button(
 request_ngn = amount*requested
 
 def get_bin_spot():# API calls
-    eurusdt = 1.1179 
-    usdtngn = 868.9
-    gbpusdt = 1.123
+    client = Client()
+    eurusdt = round(float(client.get_klines(symbol= 'EURUSDT', interval = KLINE_INTERVAL_1MINUTE)[-1][4]),2)
+    usdtngn = round(float(client.get_klines(symbol= 'USDTNGN', interval = KLINE_INTERVAL_1MINUTE)[-1][4]),2)
+    gbpusdt = round(float(client.get_klines(symbol= 'GBPUSDT', interval = KLINE_INTERVAL_1MINUTE)[-1][4]),2)
     return dict(eur = eurusdt ,usd = usdtngn, gbp = gbpusdt)
 
 
@@ -95,7 +98,7 @@ def calculate_profit(amount, requested, rates):
 def create_array(N):
     # Calculate the step size for the elements to the left and right of N
     step = 5
-    length = 9
+    length = 7
     # Initialize an empty array with 7 elements
     result = [0] * length
 
@@ -113,8 +116,12 @@ def profit_chart(amount, requested, rates, profit):
         y = calculate_profit(amount, x, rates)
         ylist.append(y['p2p'])
     
+    xlist.append(rates['flutter']['eur'])
+    ylist.append(profit['flutter'])
+    
     colors = ['lightslategray',] * len(xlist)
     colors[xlist.index(requested)] = 'crimson'
+    colors[xlist.index(rates['flutter']['eur'])] = 'blue'
     # fig = px.bar(x=xlist, y=ylist)
     fig = go.Figure(data=[go.Bar(
     x=xlist,
@@ -123,9 +130,9 @@ def profit_chart(amount, requested, rates, profit):
     )
                           ]
                     )
-    fig.add_hline(y= profit['flutter'], line_dash="dot", 
-              annotation_text="Flutterwave", 
-              annotation_position="top right")
+    # fig.add_hline(y= profit['flutter'], line_dash="dot", 
+    #           annotation_text="Flutterwave", 
+    #           annotation_position="top right")
 
     return fig
 
