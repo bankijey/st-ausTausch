@@ -1,6 +1,6 @@
 import streamlit as st
-from aiogram import Bot, Dispatcher, executor, types
-from aiogram.utils import executor
+# from aiogram import Bot, Dispatcher, executor, types
+# from aiogram.utils import executor
 import plotly.express as px
 import plotly.graph_objects as go
 import requests
