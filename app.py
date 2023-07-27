@@ -1,10 +1,28 @@
 import streamlit as st
+from aiogram import Bot, Dispatcher, executor, types
+from aiogram.utils import executor
 import plotly.express as px
 import plotly.graph_objects as go
 import requests
 import json
 from binance.client import Client
 from binance.enums import *
+import config
+
+
+# Initialize the bot and dispatcher
+def send_message_to_bot(message):
+    # Replace 'YOUR_BOT_TOKEN' with the token of the first bot
+    bot_token = '5016947449:AAHTi1p_XeLpA0K3WZ2ASvxjdE8izPEmG70'
+    bot_chat_id = 1233695002
+
+    url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
+    params = {'chat_id': bot_chat_id, 'text': message}
+    response = requests.post(url, params=params)
+    st.write(response.json())
+
+
+
 
 st.sidebar.title("Input parameters")
 
@@ -41,13 +59,38 @@ submit = st.sidebar.button(
     label = 'Submit'
 )
 
+
+if submit:
+    send_message_to_bot(f"ST Submited {amount}, {requested}")
+    
 request_ngn = amount*requested
 
 def get_bin_spot():# API calls
-    client = Client()
-    eurusdt = round(float(client.get_klines(symbol= 'EURUSDT', interval = KLINE_INTERVAL_1MINUTE)[-1][4]),2)
-    usdtngn = round(float(client.get_klines(symbol= 'USDTNGN', interval = KLINE_INTERVAL_1MINUTE)[-1][4]),2)
-    gbpusdt = round(float(client.get_klines(symbol= 'GBPUSDT', interval = KLINE_INTERVAL_1MINUTE)[-1][4]),2)
+    eurusdt = st.sidebar.number_input(
+    "EURUSDT exchange spot rate",
+    value = 1.096,
+    min_value=1.0,
+    step = 1.0,
+    format="%.2f")
+
+    usdtngn = st.sidebar.number_input(
+    "USDTNGN exchange spot rate",
+    value = 865.4,
+    min_value=1.0,
+    step = 1.0,
+    format="%.2f")
+
+    gbpusdt = st.sidebar.number_input(
+    "GBPUSDT exchange spot rate",
+    value = 1.082,
+    min_value=1.0,
+    step = 1.0,
+    format="%.2f")
+
+    # client = Client()
+    # eurusdt = round(float(client.get_klines(symbol= 'EURUSDT', interval = KLINE_INTERVAL_1MINUTE)[-1][4]),2)
+    # usdtngn = round(float(client.get_klines(symbol= 'USDTNGN', interval = KLINE_INTERVAL_1MINUTE)[-1][4]),2)
+    # gbpusdt = round(float(client.get_klines(symbol= 'GBPUSDT', interval = KLINE_INTERVAL_1MINUTE)[-1][4]),2)
     return dict(eur = eurusdt ,usd = usdtngn, gbp = gbpusdt)
 
 
