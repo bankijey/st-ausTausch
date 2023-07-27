@@ -5,21 +5,21 @@ import plotly.express as px
 import plotly.graph_objects as go
 import requests
 import json
-from binance.client import Client
-from binance.enums import *
-import config
+# from binance.client import Client
+# from binance.enums import *
+# import config
 
 
-# Initialize the bot and dispatcher
-def send_message_to_bot(message):
-    # Replace 'YOUR_BOT_TOKEN' with the token of the first bot
-    bot_token = '5016947449:AAHTi1p_XeLpA0K3WZ2ASvxjdE8izPEmG70'
-    bot_chat_id = 1233695002
+# # Initialize the bot and dispatcher
+# def send_message_to_bot(message):
+#     # Replace 'YOUR_BOT_TOKEN' with the token of the first bot
+#     bot_token = '5016947449:AAHTi1p_XeLpA0K3WZ2ASvxjdE8izPEmG70'
+#     bot_chat_id = 1233695002
 
-    url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
-    params = {'chat_id': bot_chat_id, 'text': message}
-    response = requests.post(url, params=params)
-    st.write(response.json())
+#     url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
+#     params = {'chat_id': bot_chat_id, 'text': message}
+#     response = requests.post(url, params=params)
+#     st.write(response.json())
 
 
 
@@ -60,8 +60,8 @@ submit = st.sidebar.button(
 )
 
 
-if submit:
-    send_message_to_bot(f"ST Submited {amount}, {requested}")
+# if submit:
+    # send_message_to_bot(f"ST Submited {amount}, {requested}")
     
 request_ngn = amount*requested
 
